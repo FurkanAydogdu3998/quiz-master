@@ -23,6 +23,14 @@ public class Timer : MonoBehaviour
         UpdateTimer();
     }
 
+    public void SetLoadNextQuestion(bool state) {
+        loadNextQuestion = state;
+    }
+
+    public bool GetLoadNextQuestion() {
+        return loadNextQuestion;
+    }
+
     public void CancelTimer() {
         timerValue = 0;
     }
@@ -41,16 +49,17 @@ public class Timer : MonoBehaviour
             } else {
                 timerValue = timeToAnswerTheQuestion;
                 isAnsweringQuestion = true;
+                loadNextQuestion = true;
             }
         } else {
             if (isAnsweringQuestion) {
-                fillFraction = timerValue / timeToShowingCorrectAnswer;
-            } else {
                 fillFraction = timerValue / timeToAnswerTheQuestion;
+            } else {
+                fillFraction = timerValue / timeToShowingCorrectAnswer;
             }
         }
 
-        Debug.Log(timerValue);
+        Debug.Log("Timer Value: " + timerValue + ", Fill Fraction: " + fillFraction);
     }
 
     public bool GetIsAnsweringQuestion() {
