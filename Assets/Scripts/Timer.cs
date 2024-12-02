@@ -12,6 +12,7 @@ public class Timer : MonoBehaviour
     bool isAnsweringQuestion = true;
     float fillFraction;
     public bool loadNextQuestion;
+    bool shouldTimerStop = false;
     void Start()
     {
         timerValue = timeToAnswerTheQuestion;
@@ -20,7 +21,13 @@ public class Timer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        UpdateTimer();
+        if (!shouldTimerStop) {
+            UpdateTimer();
+        }
+    }
+
+    public void StopTimer() {
+        shouldTimerStop = true;
     }
 
     public void SetLoadNextQuestion(bool state) {

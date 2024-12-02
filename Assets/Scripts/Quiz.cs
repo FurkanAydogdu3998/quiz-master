@@ -7,7 +7,8 @@ using UnityEngine.UI;
 public class Quiz : MonoBehaviour
 {
     [Header("Question Area")]
-    [SerializeField] QuestionSO question;
+    QuestionSO currentQuestion;
+    [SerializeField] List<QuestionSO> questions = new List<QuestionSO>();
     [SerializeField] TextMeshProUGUI questionText;
     
     [Header("Answer Area")]
@@ -31,16 +32,29 @@ public class Quiz : MonoBehaviour
     {
         float fillFraction = timer.GetFillFraction();
         bool timerStateIsAnswering = timer.GetIsAnsweringQuestion(); 
-        int correctAnswerIndex = question.GetCorrectAnswerIndex();
+        int correctAnswerIndex = currentQuestion.GetCorrectAnswerIndex();
 
         timerImage.fillAmount = fillFraction;
 
-        if (timer.GetLoadNextQuestion()) {
+        if (timer.GetLoadNextQuestion() && questions.Count != 0) {
             GetNextQuestion();
             timer.SetLoadNextQuestion(false);
         } else if (!isPlayerAnswered && !timerStateIsAnswering) {
             SetButtonState(false);
-            SelectAnswerWithMessage(correctAnswerIndex, "Time runned out, Correct Answer is: " + question.GetAnswer(correctAnswerIndex));
+            SelectAnswerWithMessage(correctAnswerIndex, "Time runned out, Correct Answer is: " + currentQuestion.GetAnswer(correctAnswerIndex));
+            if (questions.Count == 0) {
+                timer.StopTimer();
+            }
+        } else if (questions.Count == 0 && !timerStateIsAnswering) {
+            timer.StopTimer();
+        }
+    }
+
+    private void GetRandomQuestion() {
+        int index = Random.Range(0, questions.Count);
+        currentQuestion = questions[index];
+        if (questions.Contains(currentQuestion)) {
+            questions.Remove(currentQuestion);
         }
     }
 
@@ -68,16 +82,17 @@ public class Quiz : MonoBehaviour
     private void GetNextQuestion() {
         SetButtonState(true);
         SetButtonSpritesToDefault();
+        GetRandomQuestion();
         DisplayQuestion();
         isPlayerAnswered = false;
     }
 
     private void DisplayQuestion() {
-        questionText.text = question.GetQuestion();
+        questionText.text = currentQuestion.GetQuestion();
 
         for (int i = 0; i < answerButtons.Length; i++) {
             TextMeshProUGUI buttonTextComponent = answerButtons[i].GetComponentInChildren<TextMeshProUGUI>();
-            string answerForThisButton = question.GetAnswer(i);
+            string answerForThisButton = currentQuestion.GetAnswer(i);
 
             buttonTextComponent.text = answerForThisButton;
         }
@@ -85,10 +100,10 @@ public class Quiz : MonoBehaviour
 
     public void OnAnswerSelected(int index) {
         string text;
-        if (index == question.GetCorrectAnswerIndex()) {
+        if (index == currentQuestion.GetCorrectAnswerIndex()) {
             text = "Congratulations!";
         } else {
-            text = "OOOOH NO Correct Answer is: " + question.GetAnswer(question.GetCorrectAnswerIndex());
+            text = "OOOOH NO Correct Answer was: " + currentQuestion.GetAnswer(currentQuestion.GetCorrectAnswerIndex());
         }
 
         SelectAnswerWithMessage(index, text);

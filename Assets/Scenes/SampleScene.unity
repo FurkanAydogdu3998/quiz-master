@@ -875,8 +875,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e63cb24a6441b44c90c1b34e4ce3a68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeToAnswerTheQuestion: 30
-  timeToShowingCorrectAnswer: 10
+  timeToAnswerTheQuestion: 5
+  timeToShowingCorrectAnswer: 3
   loadNextQuestion: 0
 --- !u!1001 &646549071
 PrefabInstance:
@@ -1177,7 +1177,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd74563a88986294fb657ca05c18408b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  question: {fileID: 11400000, guid: 90b8fe004603d234eae82fee57ad69cf, type: 2}
+  questions:
+  - {fileID: 11400000, guid: 90b8fe004603d234eae82fee57ad69cf, type: 2}
+  - {fileID: 11400000, guid: afb7c0f36f51bf94cae897eb6fe6f5c0, type: 2}
+  - {fileID: 11400000, guid: 9401231393cec714bbe48886ed92b448, type: 2}
+  - {fileID: 11400000, guid: 180f021479c249346bd0708ac1cede4b, type: 2}
+  - {fileID: 11400000, guid: 2fb22775f8bf2ff478456ea01012b066, type: 2}
   questionText: {fileID: 1020538317}
   answerButtons:
   - {fileID: 1013671215}
