@@ -21,6 +21,10 @@ public class Quiz : MonoBehaviour
     [SerializeField] Image timerImage;
     Timer timer;
 
+    [Header("Progression Area")]
+    [SerializeField] Slider progressBar;
+    [SerializeField] bool isGameFinished = false;
+
     [Header("Score Keeper Area")]
     [SerializeField] GameObject scoreText;
     ScoreKeeper scoreKeeper;
@@ -29,6 +33,8 @@ public class Quiz : MonoBehaviour
     {
         timer = FindObjectOfType<Timer>();
         scoreKeeper = FindObjectOfType<ScoreKeeper>();
+        progressBar.maxValue = questions.Count;
+        progressBar.value = 0;
         GetNextQuestion();
     }
 
@@ -51,8 +57,15 @@ public class Quiz : MonoBehaviour
                 timer.StopTimer();
             }
             updateScoreText();
+            FinishGame();
         } else if (questions.Count == 0 && !timerStateIsAnswering) {
             timer.StopTimer();
+        }
+    }
+
+    private void FinishGame() {
+        if (progressBar.value == progressBar.maxValue) {
+            isGameFinished = true;
         }
     }
 
@@ -92,6 +105,7 @@ public class Quiz : MonoBehaviour
         DisplayQuestion();
         isPlayerAnswered = false;
         scoreKeeper.IncrementQuestionsSeen();
+        progressBar.value++;
     }
 
     private void DisplayQuestion() {
@@ -119,6 +133,7 @@ public class Quiz : MonoBehaviour
         SetButtonState(false);
         timer.CancelTimer();
         updateScoreText();
+        FinishGame();
     }
 
     private void updateScoreText() {
