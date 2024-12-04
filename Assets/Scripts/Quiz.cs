@@ -20,10 +20,15 @@ public class Quiz : MonoBehaviour
     [Header("Timer Area")]
     [SerializeField] Image timerImage;
     Timer timer;
+
+    [Header("Score Keeper Area")]
+    [SerializeField] GameObject scoreText;
+    ScoreKeeper scoreKeeper;
     // Start is called before the first frame update
     void Start()
     {
         timer = FindObjectOfType<Timer>();
+        scoreKeeper = FindObjectOfType<ScoreKeeper>();
         GetNextQuestion();
     }
 
@@ -41,10 +46,11 @@ public class Quiz : MonoBehaviour
             timer.SetLoadNextQuestion(false);
         } else if (!isPlayerAnswered && !timerStateIsAnswering) {
             SetButtonState(false);
-            SelectAnswerWithMessage(correctAnswerIndex, "Time runned out, Correct Answer is: " + currentQuestion.GetAnswer(correctAnswerIndex));
+            SelectAnswerWithMessage(correctAnswerIndex, "Time runned out, Correct Answer was: " + currentQuestion.GetAnswer(correctAnswerIndex));
             if (questions.Count == 0) {
                 timer.StopTimer();
             }
+            updateScoreText();
         } else if (questions.Count == 0 && !timerStateIsAnswering) {
             timer.StopTimer();
         }
@@ -85,6 +91,7 @@ public class Quiz : MonoBehaviour
         GetRandomQuestion();
         DisplayQuestion();
         isPlayerAnswered = false;
+        scoreKeeper.IncrementQuestionsSeen();
     }
 
     private void DisplayQuestion() {
@@ -102,6 +109,7 @@ public class Quiz : MonoBehaviour
         string text;
         if (index == currentQuestion.GetCorrectAnswerIndex()) {
             text = "Congratulations!";
+            scoreKeeper.IncreaseCorrectAnswers();
         } else {
             text = "OOOOH NO Correct Answer was: " + currentQuestion.GetAnswer(currentQuestion.GetCorrectAnswerIndex());
         }
@@ -110,5 +118,11 @@ public class Quiz : MonoBehaviour
         isPlayerAnswered = true;
         SetButtonState(false);
         timer.CancelTimer();
+        updateScoreText();
+    }
+
+    private void updateScoreText() {
+        TextMeshProUGUI scoreTextComponent = scoreText.GetComponentInChildren<TextMeshProUGUI>();
+        scoreTextComponent.text = "Score: " + scoreKeeper.CalculateCurrentScore() + "%";
     }
 }
