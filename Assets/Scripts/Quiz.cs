@@ -29,6 +29,7 @@ public class Quiz : MonoBehaviour
     [SerializeField] GameObject scoreText;
     ScoreKeeper scoreKeeper;
     // Start is called before the first frame update
+    
     void Start()
     {
         timer = FindObjectOfType<Timer>();
@@ -61,6 +62,10 @@ public class Quiz : MonoBehaviour
         } else if (questions.Count == 0 && !timerStateIsAnswering) {
             timer.StopTimer();
         }
+    }
+
+    public bool GetIsGameFinished() {
+        return isGameFinished;
     }
 
     private void FinishGame() {
